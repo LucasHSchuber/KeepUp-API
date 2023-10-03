@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\StockController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,21 +15,24 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get("stock", function() {
-    return response()->json("GET!");
-});
 
-Route::post("stock", function() {
-    return response()->json("POST!");
-});
+Route::resource('stock', StockController::class);
 
-Route::delete("stock", function() {
-    return response()->json("DELETEE!");
-});
+// Route::get("stock", function() {
+//     return response()->json("GET!");
+// });
 
-Route::put("stock", function() {
-    return response()->json("PUT!");
-});
+// Route::post("stock", function() {
+//     return response()->json("POST!");
+// });
+
+// Route::delete("stock", function() {
+//     return response()->json("DELETEE!");
+// });
+
+// Route::put("stock", function() {
+//     return response()->json("PUT!");
+// });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
