@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +34,23 @@ Route::resource('stock', StockController::class);
 // Route::put("stock", function() {
 //     return response()->json("PUT!");
 // });
+
+
+
+//protected routes that require authentication
+Route::middleware(['auth:sanctum'])->group(function() {
+    Route::post('stock', [TodoController::class, 'store']);
+    Route::delete('stock/{id}', [TodoController::class, 'destroy']);
+    Route::put('stock/{id}', [TodoController::class, 'update']);
+
+});
+
+//public routes
+Route::get('stock', [TodoController::class, 'index']);
+Route::get('stock/{id}', [TodoController::class, 'show']);
+Route::post('/register', [AuthController::class, 'register']);
+
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

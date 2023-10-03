@@ -39,7 +39,11 @@ class StockController extends Controller
     {
         //ser så att värden finns och att de följer vissa krav
         $request->validate([
-            // 'SKU'=>'required|between:2,64'
+            'SKU'=>'required|between:1,64',
+            'name'=>'required|between:1,64',
+            'category'=>'required|between:1,64',
+            'description'=>'required|between:1,256',
+            'price'=>'required|numeric',
 
         ]);
 
