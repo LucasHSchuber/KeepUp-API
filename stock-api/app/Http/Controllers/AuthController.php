@@ -2,63 +2,85 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\user;
+// use App\Models\user;
+// use Illuminate\Http\Request;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hase;
+use App\Models\User;
+
 
 class AuthController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
+   // Register user
+   public function register(Request $request) {
+    $validatedUser = Validator::make(
+        $request->all(),
+        [
+            'name' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6'
+        ]
+    );
+
+    if($validatedUser->fails()) {
+        return response()->json([
+            'error' => $validatedUser->errors()
+        ], 401);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => bcrypt($request->password)
+    ]);
+
+    $token = $user->createToken('APITOKEN')->plainTextToken;
+
+    $response = [
+        'message' => 'User registered successfully',
+        'user' => $user,
+        'token' => $token
+    ];
+
+    return response()->json($response, 201);
+}
+
+public function login(Request $request) {
+    $validatedUser = Validator::make(
+        $request->all(),
+        [
+            'email' => 'required|email',
+            'password' => 'required'
+        ]
+    );
+
+    if($validatedUser->fails()) {
+        return response()->json([
+            'error' => $validatedUser->errors()
+        ], 401);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\user  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function show(user $user)
-    {
-        //
+    if(!auth()->attempt($request->only(['email', 'password']))) {
+        return response()->json([
+            'message' => 'Invalid credentials'
+        ], 401);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\user  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, user $user)
-    {
-        //
-    }
+    $user = User::where('email', $request->email)->first();
+    return response()->json([
+        'message' => 'User logged in successfully',
+        'user' => $user,
+        'token' => $user->createToken('APITOKEN')->plainTextToken
+    ], 200);
+}
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\user  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(user $user)
-    {
-        //
-    }
+public function logout(Request $request) {
+    $request->user()->currentAccessToken()->delete();
+
+    return response()->json([
+        'message' => 'User logged out successfully'
+    ], 200);
+}
 }

@@ -39,16 +39,17 @@ Route::resource('stock', StockController::class);
 
 //protected routes that require authentication
 Route::middleware(['auth:sanctum'])->group(function() {
-    Route::post('stock', [TodoController::class, 'store']);
-    Route::delete('stock/{id}', [TodoController::class, 'destroy']);
-    Route::put('stock/{id}', [TodoController::class, 'update']);
+    Route::post('stock', [StockController::class, 'store']);
+    Route::delete('stock/{id}', [StockController::class, 'destroy']);
+    Route::put('stock/{id}', [StockController::class, 'update']);
 
 });
 
 //public routes
-Route::get('stock', [TodoController::class, 'index']);
-Route::get('stock/{id}', [TodoController::class, 'show']);
+Route::get('stock', [StockController::class, 'index']);
+Route::get('stock/{id}', [StockController::class, 'show']);
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 
 
 
