@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\stock;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class StockController extends Controller
 {
@@ -14,19 +15,34 @@ class StockController extends Controller
      */
     public function index()
     {
-        // return Film::all();
         $stock = Stock::all();
-        if($stock->count() > 0){
-            return response()->json([
-                'status' => 200,
-                'stock' => $stock
-            ], 200);
-        } else{
-            return response()->json([
-                'status' => 404,
-                'status_message' => 'Stock empty'
-            ], 404);
-        }
+        // Replace users_id with name
+        $data = [];
+        foreach ($stock as $item) {
+            // Push to array
+            // Get name from users_id
+            $user = User::where('id', $item->users_id)->first();
+            $name = $user->name;
+
+            // Format output date as 2023-01-01 12.15
+            $date = date('Y-m-d H:i', strtotime($item->created_at));
+
+            array_push($data, [
+                'id' => $item->id,
+                'SKU' => $item->SKU,
+                'name' => $item->name,
+                'category' => $item->category,
+                'description' => $item->description,
+                'price' => $item->price,
+                'image' => $item->image,
+                'author' => $name,
+                'users_id' => $item->users_id,
+                'created_at' => $date,
+                'updated_at' => $item->updated_at
+            ]);
+        }       
+
+        return $data;
     }
 
     /**
@@ -47,7 +63,36 @@ class StockController extends Controller
 
         ]);
 
-        return Stock::create($request->all());
+        $data = $request->all();        
+
+        // Image upload
+        if($request->hasFile('image')) {            
+            $request->validate([
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust validation rules as needed
+            ]);
+
+            $image = $request->file('image');
+            $filesize = $request->file('image')->getSize();
+
+            // Generate a unique name for the image
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+
+            // Move the uploaded image to a storage directory
+            $image->move(public_path('uploads'), $imageName);
+
+            // Create the URL for the uploaded image
+            $imageUrl = asset('uploads/' . $imageName);
+
+            // Add image to data array
+            $data['image'] = $imageUrl;  
+        }
+
+        // Stored logged in user id
+        $data['users_id'] = auth()->user()->id;
+
+        return Stock::create($data);
+
+        // return Stock::create($request->all());
     }
 
     /**
@@ -79,11 +124,12 @@ class StockController extends Controller
     {
         $stock = Stock::find($id);
         if ($stock != null) {
-
             //ser så att värden finns och att de följer vissa krav
             $request->validate([
-                // 'SKU'=>'required|between:2,64'
-                
+                'SKU'=>'required|between:1,64',
+                'name'=>'required|between:1,64',
+                'category'=>'required|between:1,64',
+                'description'=>'required|between:1,256'
             ]);
 
             $stock->update($request->all());
@@ -101,8 +147,18 @@ class StockController extends Controller
      * @param  \App\Models\stock  $stock
      * @return \Illuminate\Http\Response
      */
-    public function destroy(stock $stock)
+    public function destroy($id)
     {
-        return $stock->delete();
+        $stock = Stock::find($id);
+        if ($stock != null) {
+            $stock->delete();
+            return response()->json([
+                'Product deleted'
+            ]);
+        }
+
+        return response()->json([
+            'Product not found'
+        ], 404);
     }
 }

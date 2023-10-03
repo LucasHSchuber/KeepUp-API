@@ -20,6 +20,8 @@ class CreateStocksTable extends Migration
             $table->string('category', 64);
             $table->string('description', 256);
             $table->integer('price');
+            $table->string('image')->nullable();
+            $table->bigInteger('users_id')->nullable();
             $table->timestamps();
         });
     }

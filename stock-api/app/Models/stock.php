@@ -14,6 +14,9 @@ class stock extends Model
         "name",
         "category",
         "description",
-        "price"
+        "price",
+        "image",
+        'author',
+        'users_id'
     ];
 }
