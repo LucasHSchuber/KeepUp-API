@@ -26,6 +26,7 @@ class StockController extends Controller
 
             // Format output date as 2023-01-01 12.15
             $date = date('Y-m-d H:i', strtotime($item->created_at));
+            $date2 = date('Y-m-d H:i', strtotime($item->updated_at));
 
             array_push($data, [
                 'id' => $item->id,
@@ -36,9 +37,9 @@ class StockController extends Controller
                 'price' => $item->price,
                 'image' => $item->image,
                 'author' => $name,
-                'users_id' => $item->users_id,
+                // 'users_id' => $item->users_id,
                 'created_at' => $date,
-                'updated_at' => $item->updated_at
+                'updated_at' => $date2
             ]);
         }       
 
