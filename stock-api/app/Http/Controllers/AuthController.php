@@ -7,7 +7,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Hase;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
 
@@ -83,4 +83,8 @@ public function logout(Request $request) {
         'message' => 'User logged out successfully'
     ], 200);
 }
+// public function logout(){
+//     Auth::logout();
+// }
+
 }

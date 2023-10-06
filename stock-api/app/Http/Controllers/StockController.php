@@ -37,7 +37,7 @@ class StockController extends Controller
                 'price' => $item->price,
                 'image' => $item->image,
                 'author' => $name,
-                // 'users_id' => $item->users_id,
+                'users_id' => $item->users_id,
                 'created_at' => $date,
                 'updated_at' => $date2
             ]);
@@ -89,7 +89,7 @@ class StockController extends Controller
         }
 
         // Stored logged in user id
-        $data['users_id'] = auth()->user()->id;
+        $data['users_id'] = auth()->user()->id;    
 
         return Stock::create($data);
 
