@@ -162,4 +162,14 @@ class StockController extends Controller
             'Product not found'
         ], 404);
     }
+    public function userInputs()
+    {
+        // Get the logged-in user
+        $user = auth()->user();
+
+        // Retrieve groceries for the logged-in user
+        $input = Stock::where('users_id', $user->id)->get();
+
+        return response()->json($input);
+    }
 }

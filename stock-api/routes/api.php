@@ -46,6 +46,7 @@ Route::middleware(['auth:sanctum'])->group(function() {
     Route::post('stocks', [StockController::class, 'store']);
     Route::post('/register', [AuthController::class, 'register']);
 
+
 });
 
 // public routes
@@ -59,3 +60,6 @@ Route::get('/search', [SearchController::class, 'search']);
 Route::middleware('auth:sanctum')->get('user', function (Request $request) {
     return $request->user();
 });
+
+Route::middleware('auth:sanctum')->get('/groceries', [StockController::class, 'userInputs']);
+
