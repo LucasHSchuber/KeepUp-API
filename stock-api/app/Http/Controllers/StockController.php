@@ -130,7 +130,8 @@ class StockController extends Controller
                 'SKU'=>'required|between:1,64',
                 'name'=>'required|between:1,64',
                 'category'=>'required|between:1,64',
-                'description'=>'required|between:1,256'
+                'description'=>'required|between:1,256',
+                'price'=>'required|numeric'
             ]);
 
             $stock->update($request->all());
