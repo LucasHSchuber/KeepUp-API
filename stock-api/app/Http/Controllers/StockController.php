@@ -61,6 +61,7 @@ class StockController extends Controller
             'category'=>'required|between:1,64',
             'description'=>'required|between:1,256',
             'price'=>'required|numeric',
+            'image'=>'required',
 
         ]);
 
