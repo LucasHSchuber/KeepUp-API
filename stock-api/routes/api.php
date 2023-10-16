@@ -6,6 +6,7 @@ use App\Http\Controllers\StockController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SearchController;
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -54,7 +55,7 @@ Route::get('stocks', [StockController::class, 'index']);
 Route::get('stocks/{id}', [StockController::class, 'show']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/search', [SearchController::class, 'search']);
-
+    
 
 Route::middleware('auth:sanctum')->get('user', function (Request $request) {
     return $request->user();

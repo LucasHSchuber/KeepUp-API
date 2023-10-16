@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
-
 class AuthController extends Controller
 {
    // Register user
@@ -21,8 +20,9 @@ class AuthController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed',
-            'password_confirmation' => 'required|min:6'        ]
-    );
+            'password_confirmation' => 'required|min:6'        
+            
+        ]);
 
     if($validatedUser->fails()) {
         return response()->json([
