@@ -53,7 +53,6 @@ Route::middleware(['auth:sanctum'])->group(function() {
 Route::get('stocks', [StockController::class, 'index']);
 Route::get('stocks/{id}', [StockController::class, 'show']);
 Route::post('/login', [AuthController::class, 'login']);
-
 Route::get('/search', [SearchController::class, 'search']);
 
 
