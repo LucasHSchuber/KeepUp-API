@@ -15,6 +15,7 @@ class stock extends Model
         "category",
         "description",
         "price",
+        "volume",
         "image",
         'author',
         'users_id'

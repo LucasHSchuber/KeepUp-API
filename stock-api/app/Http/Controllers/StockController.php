@@ -35,6 +35,7 @@ class StockController extends Controller
                 'category' => $item->category,
                 'description' => $item->description,
                 'price' => $item->price,
+                'volume' => $item->volume,
                 'image' => $item->image,
                 'author' => $name,
                 'users_id' => $item->users_id,
@@ -56,11 +57,12 @@ class StockController extends Controller
     {
         //ser så att värden finns och att de följer vissa krav
         $request->validate([
-            'SKU'=>'required|between:1,64',
+            'SKU'=>'required|unique:stocks|between:1,64',
             'name'=>'required|between:1,64',
             'category'=>'required|between:1,64',
             'description'=>'required|between:1,256',
             'price'=>'required|numeric',
+            'volume'=>'between:1,5',
             'image'=>'required',
 
         ]);
@@ -128,11 +130,13 @@ class StockController extends Controller
         if ($stock != null) {
             //ser så att värden finns och att de följer vissa krav
             $request->validate([
-                'SKU'=>'required|between:1,64',
-                'name'=>'required|between:1,64',
-                'category'=>'required|between:1,64',
-                'description'=>'required|between:1,256',
-                'price'=>'required|numeric'
+                'SKU'=>'between:1,64',
+                'name'=>'between:1,64',
+                'category'=>'between:1,64',
+                'description'=>'between:1,256',
+                'price'=>'numeric',
+                'volume' => 'integer|gte:0'
+
             ]);
 
             $stock->update($request->all());
