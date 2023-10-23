@@ -62,9 +62,7 @@ class StockController extends Controller
             'category'=>'required|between:1,64',
             'description'=>'required|between:1,256',
             'price'=>'required|numeric',
-            'volume'=>'between:1,5',
-            'image'=>'required',
-
+            'volume'=>'integer|gte:0',
         ]);
 
         $data = $request->all();        
@@ -77,16 +75,12 @@ class StockController extends Controller
 
             $image = $request->file('image');
             $filesize = $request->file('image')->getSize();
-
             // Generate a unique name for the image
             $imageName = time() . '.' . $image->getClientOriginalExtension();
-
             // Move the uploaded image to a storage directory
             $image->move(public_path('uploads'), $imageName);
-
             // Create the URL for the uploaded image
             $imageUrl = asset('uploads/' . $imageName);
-
             // Add image to data array
             $data['image'] = $imageUrl;  
         }
@@ -127,6 +121,7 @@ class StockController extends Controller
     public function update(Request $request, $id)
     {
         $stock = Stock::find($id);
+
         if ($stock != null) {
             //ser så att värden finns och att de följer vissa krav
             $request->validate([
@@ -135,12 +130,17 @@ class StockController extends Controller
                 'category'=>'between:1,64',
                 'description'=>'between:1,256',
                 'price'=>'numeric',
-                'volume' => 'integer|gte:0'
+                'volume' => 'integer|gte:0',
 
             ]);
+            
+          $stock->update($request->all());
 
-            $stock->update($request->all());
-            return $stock;
+            return response()->json([
+                'message' => 'Product updated successfully',
+                'product' => $stock
+            ], 200);
+
         } else{
             return response()->json([
                 'Product not found'
@@ -148,12 +148,84 @@ class StockController extends Controller
         }
     }
 
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\stock  $stock
+     * @return \Illuminate\Http\Response
+     */
+    public function updateStock(Request $request) //function for updating image in databse
+    {
+        $stock = Stock::find($request->id);
+
+        if ($stock != null) {
+            //ser så att värden finns och att de följer vissa krav
+            $request->validate([
+                'SKU'=>'between:1,64',
+                'name'=>'between:1,64',
+                'category'=>'between:1,64',
+                'description'=>'between:1,256',
+                'price'=>'numeric',
+                // 'volume' => 'integer|gte:0',
+                'image' => ''
+
+            ]);
+            
+            // Image upload
+        if($request->hasFile('image')) {            
+            $request->validate([
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust validation rules as needed
+            ]);
+
+            $image = $request->file('image');
+            $filesize = $request->file('image')->getSize();
+            // Generate a unique name for the image
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            // Move the uploaded image to a storage directory
+            $image->move(public_path('uploads'), $imageName);
+            // Create the URL for the uploaded image
+            $imageUrl = asset('uploads/' . $imageName);
+            // Remove image from request
+            unset($request['image']);
+            // Add image to data array
+            $data['image'] = $imageUrl;  
+            $data = array_merge($request->all(), $data);
+        }
+
+
+          $stock->update($data);
+          return $stock;
+    }
+    return response()->json([
+             'Product not found'
+            ], 404);
+
+        //     return response()->json([
+        //         'message' => 'Product updated successfully',
+        //         'product' => $stock
+        //     ], 200);
+
+        // } else{
+        //     return response()->json([
+        //         'Product not found'
+        //     ], 404);
+        // }
+    }
+
+
+
+
     /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\stock  $stock
      * @return \Illuminate\Http\Response
      */
+
+
+
     public function destroy($id)
     {
         $stock = Stock::find($id);
