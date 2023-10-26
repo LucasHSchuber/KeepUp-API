@@ -38,7 +38,6 @@ Route::resource('stocks', StockController::class);
 // });
 
 
-
 //protected routes that require authentication
 Route::middleware(['auth:sanctum'])->group(function() {
     Route::delete('stocks/{id}', [StockController::class, 'destroy']);
@@ -48,8 +47,6 @@ Route::middleware(['auth:sanctum'])->group(function() {
     Route::post('stocks', [StockController::class, 'store']);
     Route::post('/register', [AuthController::class, 'register']);
 
-
-
 });
 
 // public routes
@@ -57,8 +54,6 @@ Route::get('stocks', [StockController::class, 'index']);
 Route::get('stocks/{id}', [StockController::class, 'show']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/search', [SearchController::class, 'search']);
-
-    
 
 Route::middleware('auth:sanctum')->get('user', function (Request $request) {
     return $request->user();
