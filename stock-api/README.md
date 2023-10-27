@@ -1,6 +1,5 @@
 ## Lucas Schuber
-## Backend - Projekt - fullstackutveckling med ramverk
-## Mittuniversitetet
+## Backend - Projekt 
 
 # Projektnamn
 Keepup 
